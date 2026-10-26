@@ -1,0 +1,638 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#102d28">
+  <title>Australian Citizenship Test Practice</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #18312c;
+      --muted: #5c706b;
+      --green: #176b52;
+      --green-dark: #104b3b;
+      --gold: #efbd4f;
+      --paper: #f5f7f3;
+      --line: #dce5df;
+      --good: #176b52;
+      --bad: #a43b36;
+      --shadow: 0 18px 50px rgb(20 49 42 / 10%);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse at 15% 0%, rgb(239 189 79 / 18%), transparent 35rem),
+        var(--paper);
+      font: 16px/1.55 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    button, input { font: inherit; }
+    .site-header {
+      background: #102d28;
+      color: #fff;
+      padding: 20px 24px;
+    }
+    .header-inner, main, footer { width: min(900px, calc(100% - 32px)); margin-inline: auto; }
+    .brand { display: flex; align-items: center; gap: 13px; }
+    .brand-mark {
+      display: grid; place-items: center; width: 42px; height: 42px;
+      border: 1px solid rgb(255 255 255 / 35%); border-radius: 50%;
+      color: var(--gold); font-weight: 800; letter-spacing: -2px;
+    }
+    .brand-name { font-weight: 750; letter-spacing: .01em; }
+    .brand-subtitle { color: #c1d0cb; font-size: .84rem; }
+    main { padding: 44px 0 52px; }
+    .intro { margin-bottom: 24px; }
+    .eyebrow {
+      color: var(--green); font-size: .76rem; font-weight: 800; letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    h1 { max-width: 700px; margin: 8px 0 10px; font-size: clamp(2rem, 5vw, 3.15rem); line-height: 1.12; letter-spacing: -.045em; }
+    .intro p { max-width: 670px; margin: 0; color: var(--muted); }
+    .notice {
+      margin-top: 18px; padding: 13px 16px; border-left: 4px solid var(--gold);
+      border-radius: 0 10px 10px 0; background: #fff9e9; color: #5e4b20; font-size: .9rem;
+    }
+    .stats {
+      display: flex; flex-wrap: wrap; gap: 10px; margin: 24px 0 14px;
+    }
+    .stat {
+      min-width: 120px; padding: 10px 14px; border: 1px solid var(--line);
+      border-radius: 12px; background: rgb(255 255 255 / 75%);
+    }
+    .stat strong { display: block; font-size: 1.08rem; }
+    .stat span { color: var(--muted); font-size: .78rem; }
+    .progress-row { display: flex; justify-content: space-between; gap: 12px; margin: 16px 2px 8px; color: var(--muted); font-size: .86rem; }
+    .progress-track { height: 8px; overflow: hidden; border-radius: 10px; background: #e2e9e3; }
+    .progress-bar { width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--green), #4b9c70); transition: width .25s ease; }
+    .card {
+      overflow: hidden; border: 1px solid var(--line); border-radius: 20px;
+      background: #fff; box-shadow: var(--shadow);
+    }
+    .card-top { padding: 25px 28px 0; }
+    .question-meta { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    .category {
+      display: inline-flex; align-items: center; min-height: 27px; padding: 3px 10px;
+      border-radius: 999px; background: #e8f2ec; color: var(--green-dark);
+      font-size: .76rem; font-weight: 750;
+    }
+    .question-number { color: var(--muted); font-size: .82rem; font-weight: 650; }
+    h2 { margin: 18px 0 20px; font-size: clamp(1.3rem, 3.5vw, 1.7rem); line-height: 1.32; letter-spacing: -.02em; }
+    .options { display: grid; gap: 10px; padding: 0 28px 25px; }
+    .option {
+      display: flex; align-items: flex-start; gap: 13px; width: 100%; padding: 14px 15px;
+      border: 1px solid var(--line); border-radius: 12px; background: #fff; color: var(--ink);
+      text-align: left; cursor: pointer; transition: border-color .15s, background .15s, transform .15s;
+    }
+    .option:hover:not(:disabled) { border-color: #83ae9a; background: #f8fbf8; transform: translateY(-1px); }
+    .option:focus-visible, button:focus-visible, a:focus-visible { outline: 3px solid #e4ac36; outline-offset: 3px; }
+    .option:disabled { cursor: default; }
+    .option.selected { border-color: var(--green); background: #f0f7f2; box-shadow: inset 0 0 0 1px var(--green); }
+    .option.correct { border-color: var(--good); background: #edf7f0; }
+    .option.incorrect { border-color: var(--bad); background: #fff1ef; }
+    .option-letter {
+      display: grid; flex: 0 0 27px; place-items: center; width: 27px; height: 27px;
+      border: 1px solid #cbd8d0; border-radius: 50%; color: #536a61;
+      font-size: .78rem; font-weight: 750;
+    }
+    .selected .option-letter { border-color: var(--green); background: var(--green); color: #fff; }
+    .feedback { margin: 0 28px 22px; padding: 16px 18px; border-radius: 12px; }
+    .feedback.good { background: #edf7f0; color: #154b37; }
+    .feedback.bad { background: #fff1ef; color: #6f2925; }
+    .feedback strong { display: block; margin-bottom: 4px; }
+    .feedback p { margin: 0; }
+    .feedback[hidden] { display: none; }
+    .actions {
+      display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px;
+      padding: 17px 28px; border-top: 1px solid #edf1ed; background: #fbfcfa;
+    }
+    .button {
+      min-height: 44px; padding: 10px 17px; border: 1px solid transparent;
+      border-radius: 10px; font-weight: 750; cursor: pointer;
+    }
+    .button-primary { background: var(--green); color: white; }
+    .button-primary:hover:not(:disabled) { background: var(--green-dark); }
+    .button-secondary { border-color: var(--line); background: #fff; color: var(--ink); }
+    .button:disabled { cursor: not-allowed; opacity: .45; }
+    [hidden] { display: none !important; }
+    .mode-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 20px; }
+    select { padding: 10px; font: inherit; border: 1px solid var(--line); border-radius: 8px; }
+    .review { padding: 0 28px 28px; text-align: left; }
+    .review details { padding: 12px 0; border-top: 1px solid var(--line); }
+    .review summary { cursor: pointer; font-weight: 650; }
+    .complete { padding: 38px 28px; text-align: center; }
+    .complete h2 { margin-top: 0; }
+    .complete p { color: var(--muted); }
+    .complete[hidden] { display: none; }
+    .footer-note { padding: 22px 0 0; color: var(--muted); font-size: .83rem; }
+    .footer-note a { color: var(--green-dark); font-weight: 650; }
+    footer { padding-bottom: 32px; }
+    @media (max-width: 600px) {
+      main { padding-top: 30px; }
+      .card-top { padding: 21px 18px 0; }
+      .options { padding: 0 18px 20px; }
+      .feedback { margin-inline: 18px; }
+      .actions { padding: 14px 18px; }
+      .actions .button { flex: 1; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner brand">
+      <div class="brand-mark" aria-hidden="true">AU</div>
+      <div>
+        <div class="brand-name">Citizenship Practice</div>
+        <div class="brand-subtitle">Australia · self-paced question bank</div>
+      </div>
+    </div>
+  </header>
+  <main>
+    <section class="intro" aria-labelledby="page-title">
+      <div class="eyebrow">Study at your own pace</div>
+      <h1 id="page-title">Australian Citizenship Test Practice</h1>
+      <p>Try a mixed set of 20 original questions, including five Australian values questions. Practice mode explains each answer immediately. Exam simulation allows 45 minutes and reveals answers only at the end.</p>
+      <div class="notice"><strong>Practice material:</strong> These are original study questions, not actual or guaranteed exam questions. For the official testable material, use the Australian Government's <em>Australian Citizenship: Our Common Bond</em> resource.</div>
+      <div class="mode-controls">
+        <label for="mode">Mode for your next set:</label>
+        <select id="mode">
+          <option value="practice">Practice with explanations</option>
+          <option value="exam">Timed exam simulation</option>
+        </select>
+        <button class="button button-primary" id="start-set" type="button">Start selected mode</button>
+      </div>
+      <p id="mode-description">Practice mode: explanations after every answer. Starting a new set replaces current progress.</p>
+      <p>Simulation pass target: at least 15/20 overall <strong>and all 5 values questions correct</strong>. This is not an official test or a replica of its interface.</p>
+    </section>
+
+    <section aria-label="Practice progress">
+      <div class="stats">
+        <div class="stat"><strong id="score">0 / 0</strong><span>Correct answers</span></div>
+        <div class="stat"><strong id="remaining">20</strong><span>Remaining in this set</span></div>
+        <div class="stat"><strong id="bank-count"></strong><span>Questions in this bank</span></div>
+        <div class="stat" id="timer-stat" hidden><strong id="timer">45:00</strong><span>Time remaining</span></div>
+      </div>
+      <div class="progress-row">
+        <span id="progress-label">Question 1 of 20</span>
+        <span id="progress-percent">0% complete</span>
+      </div>
+      <div class="progress-track" role="progressbar" aria-label="Question progress" aria-valuemin="0" aria-valuemax="20" aria-valuenow="0">
+        <div class="progress-bar" id="progress-bar"></div>
+      </div>
+    </section>
+
+    <section class="card" aria-live="polite" aria-atomic="true">
+      <div id="quiz">
+        <div class="card-top">
+          <div class="question-meta">
+            <span class="category" id="category"></span>
+            <span class="question-number" id="question-number"></span>
+          </div>
+          <h2 id="question" tabindex="-1"></h2>
+        </div>
+        <div class="options" id="options" role="group" aria-labelledby="question"></div>
+        <div class="feedback" id="feedback" role="status" hidden></div>
+        <div class="actions">
+          <button class="button button-secondary" id="restart" type="button">New 20-question set</button>
+          <button class="button button-primary" id="submit" type="button" disabled>Submit answer</button>
+          <button class="button button-primary" id="next" type="button" hidden>Next question</button>
+        </div>
+      </div>
+      <div class="complete" id="complete" hidden>
+        <div class="eyebrow">Practice complete</div>
+        <h2 id="result-heading" tabindex="-1">You finished your 20-question set.</h2>
+        <p id="final-score"></p>
+        <p id="pass-result"></p>
+        <p>Review any topics you found challenging in the official resource booklet, then try again.</p>
+        <button class="button button-primary" id="try-again" type="button">New 20-question set</button>
+      </div>
+      <div class="review" id="review" hidden></div>
+    </section>
+    <p class="footer-note">Study the <a href="https://immi.homeaffairs.gov.au/citizenship/test-and-interview/prepare-for-test" target="_blank" rel="noopener noreferrer">official Home Affairs preparation resources</a> and try the <a href="https://citizenshippracticetest.homeaffairs.gov.au/" target="_blank" rel="noopener noreferrer">official practice test</a>. Home Affairs states that even its sample questions differ from test-day questions. Independent sites are not endorsed by the Department. Topic coverage was compared with <a href="https://www.theaustraliantest.com/citizenship-modules/" target="_blank" rel="noopener noreferrer">The Australian Test</a>; added questions are original and grounded in the official <a href="https://immi.homeaffairs.gov.au/citizenship/test-and-interview/listen-to-podcast/transcript-episode-3" target="_blank" rel="noopener noreferrer">rights and responsibilities</a>, <a href="https://immi.homeaffairs.gov.au/citizenship/test-and-interview/listen-to-podcast/transcript-episode-4" target="_blank" rel="noopener noreferrer">government</a> and <a href="https://immi.homeaffairs.gov.au/citizenship/test-and-interview/listen-to-podcast/transcript-episode-5" target="_blank" rel="noopener noreferrer">values</a> resources. Checked 26 October 2026.</p>
+  </main>
+  <footer></footer>
+  <script>
+    const questions = [
+      { q: "Who are recognised as the First Peoples of Australia?", o: ["Aboriginal and Torres Strait Islander peoples", "The first European settlers", "People who arrived during the gold rushes", "The first elected parliamentarians"], a: 0, c: "Australia and its people", e: "Aboriginal and Torres Strait Islander peoples are the First Peoples of Australia and have continuing cultures that are among the world's oldest." },
+      { q: "How many states does Australia have?", o: ["Four", "Five", "Six", "Seven"], a: 2, c: "Australia and its people", e: "Australia has six states: New South Wales, Victoria, Queensland, South Australia, Western Australia and Tasmania." },
+      { q: "Which city is the capital of Australia?", o: ["Sydney", "Canberra", "Melbourne", "Brisbane"], a: 1, c: "Australia and its people", e: "Canberra is Australia's national capital and is in the Australian Capital Territory." },
+      { q: "Which is an Australian state capital?", o: ["Darwin", "Canberra", "Hobart", "Alice Springs"], a: 2, c: "Australia and its people", e: "Hobart is the capital of Tasmania. Darwin is the capital of the Northern Territory, Canberra is the national capital, and Alice Springs is not a capital." },
+      { q: "Which state has Perth as its capital?", o: ["South Australia", "Western Australia", "Victoria", "Tasmania"], a: 1, c: "Australia and its people", e: "Perth is the capital city of Western Australia." },
+      { q: "Which state has Adelaide as its capital?", o: ["Queensland", "New South Wales", "South Australia", "Victoria"], a: 2, c: "Australia and its people", e: "Adelaide is the capital city of South Australia." },
+      { q: "Which state has Brisbane as its capital?", o: ["Queensland", "Western Australia", "Tasmania", "Victoria"], a: 0, c: "Australia and its people", e: "Brisbane is the capital city of Queensland." },
+      { q: "Which state has Melbourne as its capital?", o: ["New South Wales", "Victoria", "South Australia", "Queensland"], a: 1, c: "Australia and its people", e: "Melbourne is the capital city of Victoria." },
+      { q: "Which state has Sydney as its capital?", o: ["Victoria", "New South Wales", "Tasmania", "South Australia"], a: 1, c: "Australia and its people", e: "Sydney is the capital city of New South Wales." },
+      { q: "Which territory has Darwin as its capital?", o: ["Australian Capital Territory", "Northern Territory", "Jervis Bay Territory", "Norfolk Island"], a: 1, c: "Australia and its people", e: "Darwin is the capital of the Northern Territory." },
+      { q: "What is the capital of Tasmania?", o: ["Launceston", "Devonport", "Hobart", "Burnie"], a: 2, c: "Australia and its people", e: "Hobart is the capital of Tasmania." },
+      { q: "What are Australia's two mainland territories?", o: ["Northern Territory and Australian Capital Territory", "Tasmania and Victoria", "Queensland and Northern Territory", "New South Wales and Australian Capital Territory"], a: 0, c: "Australia and its people", e: "The two mainland territories are the Northern Territory and the Australian Capital Territory." },
+      { q: "Which ocean lies to the west of mainland Australia?", o: ["Atlantic Ocean", "Indian Ocean", "Arctic Ocean", "Southern Ocean only"], a: 1, c: "Australia and its people", e: "The Indian Ocean lies to the west of mainland Australia." },
+      { q: "The Great Barrier Reef is off the coast of which state?", o: ["Queensland", "Victoria", "Western Australia", "Tasmania"], a: 0, c: "Australia and its people", e: "The Great Barrier Reef lies off the coast of Queensland." },
+      { q: "Uluru is located in which territory?", o: ["Australian Capital Territory", "Northern Territory", "Tasmania", "Victoria"], a: 1, c: "Australia and its people", e: "Uluru is in the Northern Territory and is a place of deep cultural significance to its Traditional Owners." },
+      { q: "What is the name of Australia's national floral emblem?", o: ["Waratah", "Golden wattle", "Kangaroo paw", "Sturt's desert pea"], a: 1, c: "Australia and its people", e: "The golden wattle is Australia's national floral emblem." },
+      { q: "What is Australia's national anthem?", o: ["Waltzing Matilda", "Advance Australia Fair", "God Save the King", "I Am Australian"], a: 1, c: "Australia and its people", e: "Advance Australia Fair is Australia's national anthem." },
+      { q: "What is represented by the Commonwealth Star on the Australian flag?", o: ["The seven states", "The six state capitals", "The six colonies before Federation", "The six states and Australia's territories"], a: 3, c: "Australia and its people", e: "The Commonwealth Star has seven points: six represent the states and the seventh represents Australia's territories." },
+      { q: "What does the Union Jack on the Australian flag reflect?", o: ["Australia's links with Britain and its history", "The discovery of gold", "The six Australian states", "The Southern Cross"], a: 0, c: "Australia and its people", e: "The Union Jack reflects Australia's historical links with Britain." },
+      { q: "Which constellation appears on the Australian national flag?", o: ["Orion", "The Southern Cross", "Leo", "The Pleiades"], a: 1, c: "Australia and its people", e: "The Southern Cross is shown on the Australian flag." },
+      { q: "What are Australia's national colours?", o: ["Blue and white", "Red and black", "Green and gold", "Green and blue"], a: 2, c: "Australia and its people", e: "Australia's national colours are green and gold." },
+      { q: "Which animals appear on Australia's Commonwealth Coat of Arms?", o: ["Koala and emu", "Kangaroo and emu", "Kangaroo and kookaburra", "Wombat and kangaroo"], a: 1, c: "Australia and its people", e: "A kangaroo and an emu support the shield on the Commonwealth Coat of Arms." },
+      { q: "When is Anzac Day observed?", o: ["25 April", "26 January", "1 January", "11 November"], a: 0, c: "Australia and its people", e: "Anzac Day is observed on 25 April, remembering Australians and New Zealanders who served and died in wars, conflicts and peacekeeping operations." },
+      { q: "What does Australia Day mark?", o: ["The opening of the first federal parliament", "The anniversary of the arrival of the First Fleet in 1788", "The end of World War II", "The first citizenship ceremony"], a: 1, c: "Australia and its people", e: "Australia Day is observed on 26 January, the anniversary of the arrival of the First Fleet at Sydney Cove in 1788." },
+      { q: "In which year did the Australian colonies unite as the Commonwealth of Australia?", o: ["1788", "1851", "1901", "1967"], a: 2, c: "Australia and its people", e: "Federation took effect on 1 January 1901, when the colonies united as the Commonwealth of Australia." },
+      { q: "What is meant by Federation in Australian history?", o: ["The colonies joining together to form one nation", "The start of the gold rushes", "The creation of the territories", "The first arrival of Europeans"], a: 0, c: "Australia and its people", e: "Federation was the joining of the six colonies to form the Commonwealth of Australia in 1901." },
+      { q: "Who led the First Fleet as its Governor when it arrived in 1788?", o: ["Captain James Cook", "Captain Arthur Phillip", "Sir Edmund Barton", "Matthew Flinders"], a: 1, c: "Australia and its people", e: "Captain Arthur Phillip was the first Governor of New South Wales and led the First Fleet." },
+      { q: "When did the First Fleet arrive at Sydney Cove?", o: ["1788", "1801", "1851", "1901"], a: 0, c: "Australia and its people", e: "The First Fleet arrived at Sydney Cove in January 1788." },
+      { q: "What is the 1967 referendum especially remembered for?", o: ["Changing the national anthem", "Changing the Australian Constitution to include Aboriginal people in the census and allow federal laws for them", "Creating the Australian Capital Territory", "Introducing compulsory voting"], a: 1, c: "Australia and its people", e: "The 1967 referendum changed the Constitution so Aboriginal people were counted in the national census and the Commonwealth could make laws for them." },
+      { q: "What did the High Court's Mabo decision recognise in 1992?", o: ["That native title could exist under Australian law", "That Australia had become a republic", "That voting was compulsory", "That the colonies had federated"], a: 0, c: "Australia and its people", e: "The Mabo decision recognised that native title could exist in Australia, overturning the idea that the land had belonged to no one before British settlement." },
+
+      { q: "What is Australia's system of government called?", o: ["A parliamentary democracy", "A military government", "An absolute monarchy", "A one-party state"], a: 0, c: "Democratic beliefs", e: "Australia is a parliamentary democracy: citizens elect representatives to parliament, which makes laws and holds government to account." },
+      { q: "What is the Australian Constitution?", o: ["A book of local council rules", "The legal document that sets out how Australia is governed", "A list of political party policies", "A document that can be changed by the Prime Minister alone"], a: 1, c: "Democratic beliefs", e: "The Constitution is Australia's founding legal document. It establishes the national parliament and outlines the powers of the Commonwealth." },
+      { q: "How can the Australian Constitution be changed?", o: ["By a national referendum that meets the double majority requirement", "By a decision of the Prime Minister", "By a vote of one state parliament", "By a local council election"], a: 0, c: "Democratic beliefs", e: "A proposed constitutional change must be approved at a referendum by a national majority of voters and a majority of voters in a majority of states." },
+      { q: "What does 'rule of law' mean?", o: ["Only citizens must obey laws", "Everyone, including leaders and government, must obey the law", "The police can ignore court decisions", "Religious rules always replace Australian laws"], a: 1, c: "Democratic beliefs", e: "The rule of law means everyone is subject to the law, including individuals, organisations and government." },
+      { q: "In a federal election, how do Australians choose members of the House of Representatives?", o: ["The Prime Minister appoints them", "Voters elect a representative for each electorate", "The High Court selects them", "State premiers nominate them"], a: 1, c: "Democratic beliefs", e: "Voters in each federal electorate elect a member to represent them in the House of Representatives." },
+      { q: "What is one important role of the Australian Parliament?", o: ["To make and debate laws", "To decide every court case", "To command every local council", "To appoint every voter"], a: 0, c: "Democratic beliefs", e: "The Australian Parliament debates and makes laws, represents Australians and scrutinises government." },
+      { q: "What does a secret ballot help protect?", o: ["A voter's privacy and freedom to choose", "The identity of election candidates", "The government's budget", "The results from being counted"], a: 0, c: "Democratic beliefs", e: "A secret ballot lets voters choose freely without other people knowing how they voted." },
+      { q: "At Australian federal elections, voting is compulsory for eligible enrolled citizens. What does this mean?", o: ["Eligible citizens are required by law to vote", "Voters must support the government", "Only property owners may vote", "Citizens can vote only if invited"], a: 0, c: "Democratic beliefs", e: "Eligible Australian citizens must enrol and vote in federal elections. Compulsory voting does not require a voter to support any particular candidate." },
+      { q: "What is one responsibility of Australian citizens aged 18 or over?", o: ["To vote in federal and state or territory elections when eligible", "To join a political party", "To become a candidate in every election", "To work for the government"], a: 0, c: "Democratic beliefs", e: "Australian citizens aged 18 or over must enrol and vote in elections when eligible. Joining a political party or running for office is optional." },
+      { q: "What is one way Australians can participate in democracy between elections?", o: ["Contacting an elected representative about an issue", "Ignoring all public decisions", "Preventing others from voting", "Replacing laws with personal rules"], a: 0, c: "Democratic beliefs", e: "People can participate by contacting representatives, taking part in public discussions and raising issues lawfully." },
+      { q: "What is a referendum?", o: ["A vote by the public on a proposed change to the Constitution", "A meeting of the Cabinet", "A court trial", "A local council budget"], a: 0, c: "Democratic beliefs", e: "A referendum asks Australians to vote on a proposed change to the Constitution." },
+      { q: "Who can vote in a federal election in Australia?", o: ["All visitors to Australia", "Australian citizens aged 18 or over who are enrolled", "Only people who own property", "Anyone who has lived in Australia for one month"], a: 1, c: "Democratic beliefs", e: "Australian citizens aged 18 or over are required to enrol and vote in federal elections, subject to limited legal exceptions." },
+      { q: "What does representative government mean?", o: ["People elect representatives to make decisions in parliament", "Every person personally votes on every law", "Courts choose all parliamentarians", "Only ministers can vote"], a: 0, c: "Democratic beliefs", e: "In representative government, voters elect people to represent them in parliament." },
+      { q: "What is the purpose of having different political parties?", o: ["To provide different ideas and choices for voters", "To prevent elections", "To replace the courts", "To make voting optional"], a: 0, c: "Democratic beliefs", e: "Political parties offer different policies and ideas. Voters can choose among candidates and parties in elections." },
+      { q: "What is a peaceful transfer of power after an election?", o: ["An important feature of Australian democracy", "A reason to cancel the election", "A court punishment", "A change to the national flag"], a: 0, c: "Democratic beliefs", e: "Governments change through lawful elections, and the transfer of power is peaceful when a different party or coalition wins." },
+      { q: "What does freedom of association generally allow people to do?", o: ["Join or leave lawful groups and organisations", "Ignore every Australian law", "Force others to join a group", "Prevent others from gathering peacefully"], a: 0, c: "Democratic beliefs", e: "Freedom of association includes the ability to join or leave lawful groups, such as community organisations and unions." },
+      { q: "What does freedom of speech allow people to do?", o: ["Express opinions lawfully and respectfully", "Threaten anyone without consequence", "Ignore laws against defamation or violence", "Force others to agree"], a: 0, c: "Democratic beliefs", e: "People can express views, including criticism of government, within the law. Freedom of speech does not remove legal responsibilities." },
+      { q: "What is the role of the Australian courts?", o: ["To interpret and apply the law independently", "To write every political party's policies", "To run elections", "To manage local roads"], a: 0, c: "Democratic beliefs", e: "Courts interpret and apply the law and resolve legal disputes. They operate independently of parliament and government." },
+      { q: "Why is it important for courts to be independent?", o: ["So cases can be decided fairly according to law", "So judges can make laws for personal reasons", "So politicians can decide every verdict", "So laws need not be followed"], a: 0, c: "Democratic beliefs", e: "Judicial independence helps ensure cases are decided impartially, based on evidence and law rather than political pressure." },
+      { q: "What is one way the Australian Parliament holds government to account?", o: ["Members question ministers and examine government actions", "It prevents courts from hearing cases", "It appoints all voters", "It replaces the Constitution each year"], a: 0, c: "Democratic beliefs", e: "Parliament scrutinises government through debate, questions to ministers and committees." },
+      { q: "Who is Australia's Head of State?", o: ["The Prime Minister", "The King of Australia", "The Chief Justice", "The Speaker of the House"], a: 1, c: "Democratic beliefs", e: "Australia is a constitutional monarchy. The King of Australia is the Head of State; the Governor-General carries out most of the King's constitutional duties in Australia." },
+      { q: "Who represents the King in Australia at the national level?", o: ["The Governor-General", "The Prime Minister", "The Speaker", "The Chief Justice"], a: 0, c: "Democratic beliefs", e: "The Governor-General represents the King in Australia and performs constitutional and ceremonial duties." },
+      { q: "Who leads the Australian Government?", o: ["The Prime Minister", "The Governor-General", "The Chief Justice", "The state Governor"], a: 0, c: "Democratic beliefs", e: "The Prime Minister leads the Australian Government and is usually the leader of the party or coalition with majority support in the House of Representatives." },
+      { q: "What is the Australian Government also commonly called?", o: ["The Commonwealth or federal government", "The municipal government", "The state cabinet", "The judicial branch"], a: 0, c: "Democratic beliefs", e: "The national government is commonly called the Australian Government, the Commonwealth Government or the federal government." },
+      { q: "What does a member of parliament represent?", o: ["The people in their electorate or state/territory, depending on the chamber", "Only the Prime Minister", "The courts", "A foreign government"], a: 0, c: "Democratic beliefs", e: "Members of the House represent electorates; Senators represent their state or territory in the Senate." },
+      { q: "What does the Australian Parliament consist of?", o: ["The King (represented by the Governor-General), the Senate and the House of Representatives", "The Prime Minister and High Court only", "Local councils and state police", "The Cabinet and all courts"], a: 0, c: "Democratic beliefs", e: "The Commonwealth Parliament consists of the King, represented by the Governor-General, the Senate and the House of Representatives." },
+      { q: "What is a coalition in Australian politics?", o: ["Two or more political parties working together", "A court hearing", "A group of voters who cannot vote", "A local council boundary"], a: 0, c: "Democratic beliefs", e: "A coalition is an agreement between political parties to work together, often to form government." },
+      { q: "Why are elections held regularly?", o: ["To allow voters to choose their representatives and government", "To let courts select the government", "To suspend the Constitution", "To remove all laws"], a: 0, c: "Democratic beliefs", e: "Regular elections give eligible voters the opportunity to choose their representatives and decide who forms government." },
+      { q: "What does equality before the law mean?", o: ["The law applies to everyone, regardless of position", "Some people are above the law", "Only citizens must follow the law", "The law changes for each political party"], a: 0, c: "Democratic beliefs", e: "Equality before the law means the same laws apply to everyone, including people in positions of authority." },
+
+      { q: "Which are the three levels of government in Australia?", o: ["Federal, state or territory, and local", "Parliament, police, and courts", "National, international, and royal", "Cabinet, Senate, and council"], a: 0, c: "Government and the law", e: "Australia has federal, state or territory, and local levels of government, each with different responsibilities." },
+      { q: "Which level of government is responsible for national defence?", o: ["Local government", "The Australian (federal) Government", "A town council", "A state school board"], a: 1, c: "Government and the law", e: "National defence is a responsibility of the Australian Government." },
+      { q: "Which level of government is mainly responsible for local rubbish collection?", o: ["Australian Government", "Local government", "The High Court", "The Senate"], a: 1, c: "Government and the law", e: "Local councils commonly manage local services such as rubbish collection, parks and local roads." },
+      { q: "Which level of government is mainly responsible for public schools?", o: ["State or territory government", "Local government only", "The Governor-General", "The High Court"], a: 0, c: "Government and the law", e: "State and territory governments are mainly responsible for public schools, although the Australian Government also has a role in education funding and policy." },
+      { q: "Which level of government is mainly responsible for hospitals?", o: ["State or territory government", "Local government only", "The Senate", "The Australian Electoral Commission"], a: 0, c: "Government and the law", e: "State and territory governments are mainly responsible for managing public hospitals, with the Australian Government also contributing funding." },
+      { q: "Which chamber is the lower house of the Australian Parliament?", o: ["The Senate", "The House of Representatives", "The High Court", "The Cabinet"], a: 1, c: "Government and the law", e: "The House of Representatives is the lower house of the Australian Parliament." },
+      { q: "Which chamber is the upper house of the Australian Parliament?", o: ["The House of Representatives", "The Senate", "The Cabinet", "The Federal Court"], a: 1, c: "Government and the law", e: "The Senate is the upper house. It reviews legislation and represents the states and territories." },
+      { q: "What is one main role of the Senate?", o: ["Reviewing proposed laws and representing states and territories", "Selecting every local councillor", "Running public hospitals", "Deciding who can become a citizen"], a: 0, c: "Government and the law", e: "The Senate considers and reviews proposed laws and represents states and territories in the federal Parliament." },
+      { q: "What is one main role of the House of Representatives?", o: ["Considering and making laws, and determining who forms government", "Managing local rubbish collection", "Appointing judges in every court", "Conducting the national census"], a: 0, c: "Government and the law", e: "The House debates and votes on laws and is central to determining which party or coalition forms government." },
+      { q: "What is the Cabinet?", o: ["A senior group of ministers that makes major government decisions", "The highest court", "A local council committee in every town", "The national election office"], a: 0, c: "Government and the law", e: "Cabinet is the senior decision-making group of ministers in government, led by the Prime Minister or a Premier." },
+      { q: "What does the Australian Electoral Commission do?", o: ["Runs federal elections and referendums", "Decides court cases", "Writes the Constitution", "Manages every state school"], a: 0, c: "Government and the law", e: "The Australian Electoral Commission (AEC) conducts federal elections and referendums and maintains the federal electoral roll." },
+      { q: "What is an electorate?", o: ["An area whose voters elect a representative", "A government department", "A courtroom", "A political party's headquarters"], a: 0, c: "Government and the law", e: "An electorate is a geographic area whose voters elect a representative to parliament." },
+      { q: "What is the purpose of a jury in a criminal trial?", o: ["To consider evidence and decide whether the accused is guilty", "To write the criminal law", "To select the Prime Minister", "To decide the sentence in every case"], a: 0, c: "Government and the law", e: "In cases that have a jury, jurors consider evidence and decide whether the accused is guilty. The judge manages the trial and determines the sentence if required." },
+      { q: "What should a person do if they receive a lawful summons for jury service?", o: ["Follow the instructions and attend or respond as directed", "Ignore it because jury service is optional for everyone", "Ask a political party to cancel it", "Destroy the summons"], a: 0, c: "Government and the law", e: "Jury service is an important civic responsibility. A person should follow the summons instructions and contact the relevant court if they have a valid reason they cannot attend." },
+      { q: "What is the police's role?", o: ["Enforce the law and help protect the community", "Make all laws in Parliament", "Decide whether the Constitution changes", "Choose the government"], a: 0, c: "Government and the law", e: "Police help enforce the law and protect public safety. Parliament makes laws and courts interpret and apply them." },
+      { q: "Who makes laws for Australia at the federal level?", o: ["The Australian Parliament", "The police", "Local councils", "The Governor-General alone"], a: 0, c: "Government and the law", e: "The Australian Parliament makes federal laws. A bill must pass through Parliament and receive Royal Assent to become law." },
+      { q: "What is a bill?", o: ["A proposed law being considered by Parliament", "A final court judgment", "A tax receipt", "A ballot paper"], a: 0, c: "Government and the law", e: "A bill is a proposal for a new law or a change to an existing law. It becomes law after passing the required parliamentary process and receiving Royal Assent." },
+      { q: "What is the High Court of Australia?", o: ["Australia's highest court", "The upper house of Parliament", "The national police service", "The body that runs elections"], a: 0, c: "Government and the law", e: "The High Court is Australia's highest court. It interprets the Constitution and hears important appeals and other cases." },
+      { q: "What is the legal voting age in Australian federal elections?", o: ["16", "17", "18", "21"], a: 2, c: "Government and the law", e: "Australian citizens aged 18 or over are eligible and required to enrol and vote in federal elections, subject to limited exceptions." },
+      { q: "What may happen if someone breaks the law?", o: ["A court may impose a penalty after a fair legal process", "They automatically lose citizenship", "Parliament must cancel the law", "Nothing can happen if they disagree with the law"], a: 0, c: "Government and the law", e: "A person accused of breaking the law is dealt with through legal processes. If found guilty, a court may impose a penalty under the law." },
+      { q: "What does 'innocent until proven guilty' mean?", o: ["A person is presumed innocent unless guilt is established in court", "Police must prove a person is innocent", "An accused person cannot have a lawyer", "Courts cannot hear criminal cases"], a: 0, c: "Government and the law", e: "A person charged with an offence is presumed innocent unless and until guilt is proven according to law." },
+      { q: "What is the purpose of taxes?", o: ["To help fund public services and government activities", "To pay only for political parties", "To replace all laws", "To fund private purchases chosen by each voter"], a: 0, c: "Government and the law", e: "Taxes help governments provide services and infrastructure such as health care, education, roads and emergency services." },
+      { q: "Which document sets out the powers of the Australian Government and Parliament?", o: ["The Australian Constitution", "A local council notice", "A party membership card", "A driver's licence"], a: 0, c: "Government and the law", e: "The Australian Constitution establishes the Commonwealth Parliament and outlines the powers of the national government." },
+      { q: "What is one responsibility of local councils?", o: ["Managing local parks and community facilities", "Managing national defence", "Issuing Australian passports", "Interpreting the Constitution"], a: 0, c: "Government and the law", e: "Local councils provide local services, which commonly include parks, community facilities, local planning and rubbish collection." },
+      { q: "Who is responsible for issuing Australian passports?", o: ["The Australian Government", "Local councils", "State parliaments", "The High Court"], a: 0, c: "Government and the law", e: "Australian passports are issued by the Australian Government." },
+      { q: "What does the Governor-General do when a bill has passed Parliament?", o: ["May grant Royal Assent, after which the bill becomes law", "Rewrites the bill without Parliament", "Conducts the next election", "Acts as the trial judge"], a: 0, c: "Government and the law", e: "A bill passed by both houses is presented to the Governor-General for Royal Assent. Once assent is given, it becomes an Act of Parliament." },
+      { q: "What is one role of a state or territory parliament?", o: ["Making laws on matters within its constitutional responsibilities", "Making every federal law", "Appointing the Australian Prime Minister", "Running the national census"], a: 0, c: "Government and the law", e: "State and territory parliaments make laws on matters for which their governments are responsible, such as schools, hospitals and policing." },
+      { q: "What is the purpose of having two houses in the federal Parliament?", o: ["To provide representation and review of proposed laws", "To allow two Prime Ministers to govern", "To replace elections with appointments", "To give courts control over Parliament"], a: 0, c: "Government and the law", e: "The two houses provide different forms of representation and allow proposed laws to be considered and reviewed." },
+      { q: "Which level of government is mainly responsible for immigration and citizenship?", o: ["The Australian Government", "Local councils", "State governments only", "The courts alone"], a: 0, c: "Government and the law", e: "Immigration and citizenship are responsibilities of the Australian Government." },
+
+      { q: "Which statement best describes freedom of religion in Australia?", o: ["People may follow any religion or no religion, within the law", "Everyone must follow the same religion", "Only Australian-born people may practise religion", "Religious law always overrides Australian law"], a: 0, c: "Australian values", e: "Australia values freedom of religion. People may practise a religion or have no religion, as long as they obey Australian law." },
+      { q: "Can people in Australia peacefully criticise the government?", o: ["Yes, they may express criticism lawfully", "No, criticism of government is always illegal", "Only elected politicians may criticise government", "Only people who own property may speak"], a: 0, c: "Australian values", e: "Freedom of speech includes the ability to discuss and criticise government peacefully and lawfully." },
+      { q: "Which action is consistent with freedom of speech?", o: ["Sharing a lawful opinion respectfully, even if others disagree", "Threatening someone who disagrees", "Using violence to silence a speaker", "Preventing all public discussion"], a: 0, c: "Australian values", e: "People may express different opinions peacefully. Threats and violence are not protected as acceptable ways to express an opinion." },
+      { q: "Is violence an acceptable way to change someone's political or religious views in Australia?", o: ["Yes, if the cause is popular", "No, disagreements must be handled peacefully and lawfully", "Yes, if the person is a citizen", "Only during elections"], a: 1, c: "Australian values", e: "Australian values reject violence. People should resolve disagreements peacefully and within the law." },
+      { q: "What does equality of men and women mean in Australia?", o: ["Men and women have equal rights and opportunities under the law", "Men have more legal rights", "Women cannot vote", "Rights depend on a person's family"], a: 0, c: "Australian values", e: "Men and women have equal rights under Australian law, including the right to vote and participate in public life." },
+      { q: "Can a person be forced to marry someone in Australia?", o: ["Yes, by a family member", "No, marriage requires the free and full consent of both people", "Yes, if the couple belongs to a community group", "Only if the person is under 30"], a: 1, c: "Australian values", e: "Forced marriage is illegal. Both people must freely and fully consent to marriage." },
+      { q: "In Australia, who has the right to choose whom they marry?", o: ["Each person, with free and full consent", "Only the oldest family member", "The local council", "A political party"], a: 0, c: "Australian values", e: "Adults have the right to choose whom they marry. Marriage requires the free and full consent of both people." },
+      { q: "Are people expected to obey Australian laws even when they personally disagree with them?", o: ["Yes, laws must be obeyed unless changed through lawful processes", "No, personal disagreement cancels a law", "Only visitors must obey laws", "Only laws made by local councils apply"], a: 0, c: "Australian values", e: "Everyone in Australia must obey the law. People may lawfully campaign to change a law, but cannot simply disregard it." },
+      { q: "What is the appropriate way to seek a change to a law you disagree with?", o: ["Use peaceful and lawful democratic processes", "Use threats against lawmakers", "Ignore the courts", "Stop others from voting"], a: 0, c: "Australian values", e: "People may campaign, contact representatives and use other peaceful, lawful democratic processes to seek a change." },
+      { q: "Should people respect the freedom of others to hold different beliefs?", o: ["Yes, within the law", "No, everyone must agree", "Only if the other person has the same background", "Only during election campaigns"], a: 0, c: "Australian values", e: "Respect for others includes accepting that people can hold different lawful beliefs and opinions." },
+      { q: "What does a 'fair go' generally mean in Australia?", o: ["People should have a fair opportunity and be treated fairly", "Only wealthy people should have opportunities", "People should ignore the law to succeed", "Everyone must have identical jobs"], a: 0, c: "Australian values", e: "A fair go expresses the idea that people should have a fair opportunity and be treated fairly." },
+      { q: "Does the law protect people from discrimination based on attributes such as race or sex?", o: ["Yes, Australian laws prohibit many forms of discrimination", "No, discrimination is always lawful", "Only citizens are protected", "Only employers can decide whether discrimination is allowed"], a: 0, c: "Australian values", e: "Australian anti-discrimination laws prohibit many forms of discrimination, including discrimination based on race and sex." },
+      { q: "What should you do if you witness domestic or family violence?", o: ["Treat it as a serious matter and seek help from police or support services", "Ignore it because it is a private issue", "Use violence in response", "Assume it is allowed within a family"], a: 0, c: "Australian values", e: "Domestic and family violence is not acceptable and may be a crime. Safety should come first; contact police or a support service for help." },
+      { q: "Is it acceptable to use violence against a spouse or family member in Australia?", o: ["Yes, if it is a family matter", "No, violence is not acceptable and may be a crime", "Yes, if the person apologises later", "Only if no one else sees it"], a: 1, c: "Australian values", e: "Violence against a partner or family member is not acceptable and may be a crime. Family relationships do not place anyone above the law." },
+      { q: "What is expected of a person who wants to join a peaceful public protest?", o: ["Follow the law and respect the safety and rights of others", "Use violence to attract attention", "Prevent others from leaving", "Ignore lawful directions in every situation"], a: 0, c: "Australian values", e: "People may participate in peaceful, lawful protest, while respecting other people's safety and rights and obeying the law." },
+      { q: "Can people choose not to have a religious belief in Australia?", o: ["Yes, freedom of religion includes having no religion", "No, everyone must belong to a religion", "Only adults may choose", "Only people born in Australia may choose"], a: 0, c: "Australian values", e: "Freedom of religion includes the freedom to follow a religion, change religion or have no religion." },
+      { q: "Can religious practices override Australian law?", o: ["Yes, in every situation", "No, everyone must obey Australian law", "Yes, if a community leader approves", "Only for citizens"], a: 1, c: "Australian values", e: "Freedom of religion is protected, but everyone must obey Australian law." },
+      { q: "What should someone do when they disagree with another person's lawful opinion?", o: ["Respond peacefully and respectfully", "Threaten the person", "Use violence", "Prevent the person from voting"], a: 0, c: "Australian values", e: "Respectful disagreement and peaceful discussion are consistent with Australian democratic values; intimidation and violence are not." },
+      { q: "Is bribing a public official to influence a decision acceptable?", o: ["Yes, if the decision is important", "No, bribery and corruption are against the law", "Only if no money changes hands", "Only for non-citizens"], a: 1, c: "Australian values", e: "Bribery and corruption are unlawful. Public officials must act according to the law and their responsibilities." },
+      { q: "What does mutual respect mean in a diverse community?", o: ["Treating others with dignity despite differences", "Demanding that everyone share one culture", "Allowing harassment of people with different views", "Avoiding all contact with neighbours"], a: 0, c: "Australian values", e: "Mutual respect means treating other people with dignity, including people with different backgrounds, beliefs and opinions." },
+      { q: "Do Australian citizens have the right to vote regardless of their sex?", o: ["Yes, citizens who meet voting requirements have equal voting rights", "No, only men may vote", "No, only women may vote", "Only people with property may vote"], a: 0, c: "Australian values", e: "Men and women have equal voting rights in Australia, subject to the same eligibility requirements." },
+      { q: "Can a person use threats to stop another person from voting?", o: ["No, voters must be free to make their own choice", "Yes, if the threat is from a family member", "Yes, if they support the same party", "Only outside a polling place"], a: 0, c: "Australian values", e: "Voting must be free. Threatening or coercing someone over their vote is contrary to democratic principles and may break the law." },
+      { q: "What does tolerance mean in Australian society?", o: ["Accepting the right of others to hold lawful differences", "Agreeing with every person", "Allowing crimes to go unreported", "Giving one group more rights than others"], a: 0, c: "Australian values", e: "Tolerance means respecting people's lawful differences, not that everyone must agree or that the law does not apply." },
+      { q: "Which is a lawful way to express a political view?", o: ["Writing to an elected representative", "Damaging public property", "Threatening voters", "Preventing a parliamentarian from leaving a building"], a: 0, c: "Australian values", e: "Contacting an elected representative is a lawful democratic way to express a political view. Violence, threats and property damage are not." },
+      { q: "Should parents ensure children attend school as required by law?", o: ["Yes, children must receive education as required by Australian law", "No, education is never required", "Only if the child wants to attend", "Only after the child turns 18"], a: 0, c: "Australian values", e: "Australian law requires children to receive education, generally through school attendance or an approved alternative." },
+      { q: "What should a person do if they see someone being treated unfairly because of their background?", o: ["Support respectful and lawful treatment and seek appropriate help", "Join in the unfair treatment", "Assume discrimination is always legal", "Use violence against the person responsible"], a: 0, c: "Australian values", e: "Respect and equality are important values. People should support fair treatment and use safe, lawful ways to address discrimination." },
+      { q: "Does freedom of speech allow someone to break the law by making threats?", o: ["Yes, speech is never limited", "No, freedom of speech does not make unlawful threats acceptable", "Only during a public meeting", "Only if the person is a citizen"], a: 1, c: "Australian values", e: "Freedom of speech is not unlimited. Threats and other unlawful conduct may have legal consequences." },
+      { q: "What is an important responsibility of everyone living in Australia?", o: ["Obey Australian laws", "Vote in every election regardless of eligibility", "Join the armed forces", "Support the current government"], a: 0, c: "Australian values", e: "Everyone in Australia, including visitors and permanent residents, must obey Australian laws." },
+      { q: "Can people peacefully campaign for a political party they support?", o: ["Yes, lawful political participation is allowed", "No, political parties are illegal", "Only government employees may campaign", "Only during court proceedings"], a: 0, c: "Australian values", e: "People may lawfully support a political party and take part in political activity, subject to applicable laws." },
+      { q: "What is the best response when a peaceful political debate becomes heated?", o: ["Continue respectfully or step away; do not use threats or violence", "Use force to win the argument", "Prevent the other person from speaking forever", "Destroy the other person's property"], a: 0, c: "Australian values", e: "Disagreements should be managed peacefully. Threats and violence are not acceptable ways to settle a debate." },
+
+      { q: "Which is Australia's national colours combination?", o: ["Green and gold", "Blue and red", "Black and white", "Purple and silver"], a: 0, c: "People, history and community", e: "Green and gold are Australia's national colours." },
+      { q: "What does the Aboriginal flag's black colour traditionally represent?", o: ["The Aboriginal people", "The sea", "The sun", "The states"], a: 0, c: "People, history and community", e: "On the Aboriginal flag, black represents the Aboriginal people, red represents the earth and ochre, and yellow represents the sun." },
+      { q: "What does the yellow circle on the Aboriginal flag represent?", o: ["The sun", "The Commonwealth Star", "The desert", "The federal Parliament"], a: 0, c: "People, history and community", e: "The yellow circle on the Aboriginal flag represents the sun." },
+      { q: "What do the colours of the Torres Strait Islander flag include?", o: ["Green, blue, black and white", "Red, white and blue only", "Yellow and purple only", "Black and gold only"], a: 0, c: "People, history and community", e: "The Torres Strait Islander flag features green, blue, black and white, with a white Dhari and star." },
+      { q: "What is depicted at the centre of the Torres Strait Islander flag?", o: ["A white Dhari and star", "A kangaroo and emu", "A golden wattle", "The Commonwealth Star"], a: 0, c: "People, history and community", e: "The Torres Strait Islander flag has a white Dhari (traditional headdress) and a five-pointed star at its centre." },
+      { q: "What is one important feature of Aboriginal and Torres Strait Islander cultures?", o: ["They include many distinct communities, languages and traditions", "They are all exactly the same", "They began after Federation", "They exist only in one part of Australia"], a: 0, c: "People, history and community", e: "Aboriginal and Torres Strait Islander peoples have diverse communities, languages and traditions, with continuing connections to Country." },
+      { q: "What does the term 'Country' often mean for Aboriginal and Torres Strait Islander peoples?", o: ["An important connection to land, waters, culture and community", "Only a country's legal border", "A place where no one lives", "A type of local government"], a: 0, c: "People, history and community", e: "For many Aboriginal and Torres Strait Islander peoples, Country includes deep cultural, spiritual and custodial connections to land and waters." },
+      { q: "What was one result of the gold rushes in the 1850s?", o: ["Rapid population growth and increased migration", "The end of all immigration", "The creation of the Australian Constitution", "The arrival of the First Fleet"], a: 0, c: "People, history and community", e: "The gold rushes attracted many people to Australia and contributed to population growth and social change." },
+      { q: "Who were the Anzacs?", o: ["Australian and New Zealand Army Corps service members", "The first members of the federal Parliament", "The first local councillors", "A group of early gold miners"], a: 0, c: "People, history and community", e: "Anzac originally referred to the Australian and New Zealand Army Corps. The term is associated with service in wars and conflicts." },
+      { q: "At which campaign in 1915 did Anzac troops serve during World War I?", o: ["Gallipoli", "Waterloo", "The Battle of Britain", "The Berlin Airlift"], a: 0, c: "People, history and community", e: "Australian and New Zealand troops served at Gallipoli in 1915 during World War I." },
+      { q: "What is the name of Australia's national day of remembrance on 11 November?", o: ["Remembrance Day", "Australia Day", "Anzac Day", "Federation Day"], a: 0, c: "People, history and community", e: "Remembrance Day is observed on 11 November to remember those who died or suffered in wars and armed conflicts." },
+      { q: "Which event is associated with the beginning of the modern Australian nation in 1901?", o: ["Federation", "The gold rushes", "The Mabo decision", "The First Fleet's arrival"], a: 0, c: "People, history and community", e: "Federation on 1 January 1901 united the six colonies as the Commonwealth of Australia." },
+      { q: "What is one reason Australia is described as a culturally diverse society?", o: ["People from many backgrounds contribute to Australian life", "Everyone has the same ancestry", "Only one language is spoken in homes", "Migration has never occurred"], a: 0, c: "People, history and community", e: "Australia's communities include people with many different cultural, linguistic and religious backgrounds." },
+      { q: "Which city is the capital of the Northern Territory?", o: ["Darwin", "Canberra", "Perth", "Cairns"], a: 0, c: "People, history and community", e: "Darwin is the capital city of the Northern Territory." },
+      { q: "Which city is the capital of the Australian Capital Territory?", o: ["Sydney", "Canberra", "Hobart", "Darwin"], a: 1, c: "People, history and community", e: "Canberra is the capital city of the Australian Capital Territory as well as Australia's national capital." },
+      { q: "Which state is an island south of mainland Australia?", o: ["Tasmania", "Queensland", "Western Australia", "New South Wales"], a: 0, c: "People, history and community", e: "Tasmania is an island state south of the Australian mainland." },
+      { q: "What is one reason Canberra was chosen as the national capital?", o: ["It was selected as a compromise between Sydney and Melbourne", "It is Australia's largest city", "It is the only city in a state", "It is on the Great Barrier Reef"], a: 0, c: "People, history and community", e: "Canberra was selected as a compromise location between the rival cities of Sydney and Melbourne." },
+      { q: "What is the Southern Cross?", o: ["A constellation visible in the southern sky", "A state parliament", "A national flower", "A government department"], a: 0, c: "People, history and community", e: "The Southern Cross is a constellation prominent in the southern sky and appears on the Australian flag." },
+      { q: "What is a national symbol of Australia?", o: ["The golden wattle", "The maple leaf", "The shamrock", "The lotus"], a: 0, c: "People, history and community", e: "The golden wattle is Australia's national floral emblem and an important national symbol." },
+      { q: "What do the six points of the Commonwealth Star originally represent?", o: ["The six states", "The six biggest cities", "The six levels of government", "The six oceans"], a: 0, c: "People, history and community", e: "The six points originally represented the six states; a seventh point was later added for Australia's territories." },
+      { q: "What does the seventh point on the Commonwealth Star represent?", o: ["The territories of Australia", "The Prime Minister", "The Southern Cross", "The first fleet"], a: 0, c: "People, history and community", e: "The seventh point represents Australia's territories." },
+      { q: "Which state has Hobart as its capital?", o: ["Tasmania", "Victoria", "Queensland", "South Australia"], a: 0, c: "People, history and community", e: "Hobart is the capital of Tasmania." },
+      { q: "Which state has Sydney as its capital?", o: ["New South Wales", "Western Australia", "Victoria", "Queensland"], a: 0, c: "People, history and community", e: "Sydney is the capital city of New South Wales." },
+      { q: "Which state has Adelaide as its capital?", o: ["South Australia", "Tasmania", "Victoria", "Queensland"], a: 0, c: "People, history and community", e: "Adelaide is the capital city of South Australia." },
+      { q: "Which state has Perth as its capital?", o: ["Western Australia", "New South Wales", "Queensland", "Victoria"], a: 0, c: "People, history and community", e: "Perth is the capital city of Western Australia." },
+      { q: "Which state has Brisbane as its capital?", o: ["Queensland", "Tasmania", "South Australia", "Victoria"], a: 0, c: "People, history and community", e: "Brisbane is the capital city of Queensland." },
+      { q: "Which state has Melbourne as its capital?", o: ["Victoria", "Western Australia", "New South Wales", "Tasmania"], a: 0, c: "People, history and community", e: "Melbourne is the capital city of Victoria." },
+      { q: "What does the red colour on the Aboriginal flag represent?", o: ["The earth and the spiritual relationship to the land", "The sea", "The Prime Minister", "The Southern Cross"], a: 0, c: "People, history and community", e: "Red on the Aboriginal flag represents the earth and people's spiritual relationship to the land." },
+      { q: "What does the blue on the Torres Strait Islander flag represent?", o: ["The sea", "The sun", "The land", "The states"], a: 0, c: "People, history and community", e: "Blue on the Torres Strait Islander flag represents the sea." },
+      { q: "What does the white star on the Torres Strait Islander flag represent?", o: ["Navigation and the five island groups", "The Australian Parliament", "The six states", "The national flower"], a: 0, c: "People, history and community", e: "The five-pointed star represents the five major island groups, and is also a symbol of navigation." },
+
+      { q: "What happens at a citizenship ceremony?", o: ["Eligible people make the Australian Citizenship Pledge and become citizens", "People vote for a new parliament", "A court decides all criminal cases", "The Constitution is rewritten"], a: 0, c: "Citizenship and responsibilities", e: "At a citizenship ceremony, successful applicants make the Australian Citizenship Pledge. This is generally the final step in becoming an Australian citizen." },
+      { q: "What does the Australian Citizenship Pledge express?", o: ["Commitment to Australia and its people, democratic beliefs, rights and liberties, and respect for the laws", "Support for one political party", "A promise to never travel overseas", "A promise to join the armed forces"], a: 0, c: "Citizenship and responsibilities", e: "The pledge expresses commitment to Australia and its people, democratic beliefs, rights and liberties, and respect for and obedience to Australian laws." },
+    ];
+
+    questions.push(
+      { q: "What does a secular Australian government mean?", o: ["Australia has no official national religion", "Religious belief is forbidden", "One religion makes all laws", "Only religious people may vote"], a: 0, c: "Democratic beliefs", e: "Australia has no official national religion. People may follow a religion or have no religion, while obeying Australian law." },
+      { q: "Which power allows Parliament to make and change laws?", o: ["Legislative power", "Judicial power", "Police discretion", "Consular power"], a: 0, c: "Government and the law", e: "Legislative power is the power to make and change laws. It is exercised by Parliament." },
+      { q: "Which power involves putting laws into practice?", o: ["Executive power", "Judicial power", "Electoral power", "Jury power"], a: 0, c: "Government and the law", e: "Executive power puts laws into practice. The federal Executive includes the Prime Minister, ministers and the Governor-General." },
+      { q: "Why does the Constitution divide legislative, executive and judicial powers?", o: ["To prevent one person or group holding all power", "To let police write the Constitution", "To remove the need for elections", "To make judges answer to political parties"], a: 0, c: "Government and the law", e: "Dividing powers helps prevent power being concentrated in one person or group. Courts and judges are independent of Parliament and government." },
+      { q: "What title is given to the leader of a state government?", o: ["Premier", "Governor-General", "Chief Justice", "Senator"], a: 0, c: "Government and the law", e: "A Premier leads a state government. The Prime Minister leads the Australian Government." },
+      { q: "Who leads the government of a mainland Australian territory?", o: ["A Chief Minister", "A state Governor", "The Chief Justice", "The Speaker of the Senate"], a: 0, c: "Government and the law", e: "A Chief Minister leads a territory government, such as the Northern Territory or Australian Capital Territory government." },
+      { q: "Who represents the Head of State in an Australian state?", o: ["A Governor", "The local mayor", "The Premier", "A federal Senator"], a: 0, c: "Government and the law", e: "A Governor represents the Head of State in each state. The Governor-General represents the Head of State nationally." },
+      { q: "A local council is commonly led by which office holder?", o: ["A Mayor or Shire President", "The Prime Minister", "A federal judge", "A Governor"], a: 0, c: "Government and the law", e: "A Mayor or Shire President leads a local government. Councillors are elected members of the council." },
+      { q: "What is a government minister responsible for?", o: ["An assigned area of government", "Choosing how every citizen votes", "Deciding guilt in every criminal case", "Replacing all state governments"], a: 0, c: "Government and the law", e: "A government minister is a parliamentarian chosen by the government leader to be responsible for an area of government." },
+      { q: "Who is Commander-in-Chief of the Australian Defence Force?", o: ["The Governor-General", "A local mayor", "The Chief Justice", "The Australian Electoral Commissioner"], a: 0, c: "Government and the law", e: "Commander-in-Chief of the Australian Defence Force is one of the Governor-General's roles." },
+      { q: "What responsibility do citizens have if Australia needs to be defended?", o: ["Defend Australia should the need arise", "Automatically enlist at every election", "Ignore any national emergency", "Leave all responsibilities to visitors"], a: 0, c: "Citizenship and responsibilities", e: "Defending Australia should the need arise is a citizenship responsibility. Service in the Australian Defence Force is voluntary." },
+      { q: "Which is a privilege of citizenship relating to overseas travel?", o: ["Applying for an Australian passport and returning without a visa", "Ignoring the laws of other countries", "Entering every country without permission", "Demanding free overseas travel"], a: 0, c: "Citizenship and responsibilities", e: "Citizens can apply for an Australian passport and return to Australia without needing a visa. Other countries still set their own entry requirements." },
+      { q: "While overseas, what help may an Australian citizen request?", o: ["Consular assistance from an Australian official", "An exemption from all foreign laws", "Automatic release from every court case", "A guaranteed free flight home"], a: 0, c: "Citizenship and responsibilities", e: "Citizens can ask Australian officials for consular assistance overseas. This does not exempt them from local laws or guarantee a particular outcome." },
+      { q: "Which employment opportunity is identified as a citizenship privilege in Our Common Bond?", o: ["Applying for work in the Australian Public Service", "Being guaranteed any government job", "Becoming Prime Minister without an election", "Working without complying with employment laws"], a: 0, c: "Citizenship and responsibilities", e: "Citizenship provides the privilege of applying for Australian Public Service work. Applicants must still meet the job's requirements." },
+      { q: "What can happen if an eligible citizen fails to vote without a good reason?", o: ["They may have to pay a fine", "They automatically become Prime Minister", "Their citizenship always ends immediately", "Their vote is automatically assigned to the government"], a: 0, c: "Democratic beliefs", e: "Voting is compulsory for eligible citizens. Failing to vote without a valid reason can result in a fine." },
+      { q: "Why is making an effort to learn English important in Australia?", o: ["It helps people participate in education, work and community life", "It means other languages may never be spoken", "It removes the need to obey laws", "It guarantees a government job"], a: 0, c: "Australian values", e: "English is Australia's national language. Learning it helps people participate in society and access opportunities; people can also maintain other languages." },
+      { q: "A neighbour has different religious beliefs. How should you treat them?", o: ["With dignity and respect", "Exclude them from all community activities", "Threaten them until they change beliefs", "Assume they have fewer legal rights"], a: 0, c: "Australian values", e: "Mutual respect applies regardless of religious belief or background. Differences do not remove a person's rights." },
+      { q: "A person with a disability applies for work. Which approach reflects a fair go?", o: ["Consider their abilities fairly rather than dismissing them because of disability", "Refuse every applicant with a disability", "Only consider their family wealth", "Assume they are not protected by law"], a: 0, c: "Australian values", e: "Equality of opportunity means people should be assessed fairly. Australian laws protect people against disability discrimination." },
+      { q: "Can someone be forced to join a lawful community organisation?", o: ["No, they may choose whether to join", "Yes, if a neighbour insists", "Yes, if they are a new citizen", "Yes, whenever the organisation is popular"], a: 0, c: "Australian values", e: "Freedom of association includes the freedom not to join. People cannot be forced into joining an organisation." },
+      { q: "A person expresses an opinion through music or art. Which freedom is relevant?", o: ["Freedom of expression within the law", "Freedom to disregard all laws", "The right to force agreement", "The power to make court decisions"], a: 0, c: "Democratic beliefs", e: "Freedom of expression allows people to express views through art, music, film and literature, while obeying Australian laws and respecting others' freedoms." }
+    );
+
+    const letters = ["A", "B", "C", "D"];
+    const categoryEl = document.getElementById("category");
+    const questionNumberEl = document.getElementById("question-number");
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const feedbackEl = document.getElementById("feedback");
+    const submitButton = document.getElementById("submit");
+    const nextButton = document.getElementById("next");
+    const restartButton = document.getElementById("restart");
+    const quizEl = document.getElementById("quiz");
+    const completeEl = document.getElementById("complete");
+    const progressBar = document.getElementById("progress-bar");
+    const progressTrack = document.querySelector('[role="progressbar"]');
+    const setSize = 20;
+    let practiceQuestions = createPracticeSet();
+    let index = 0;
+    let selected = null;
+    let answered = false;
+    let correct = 0;
+    let mode = "practice";
+    let responses = [];
+    let finished = false;
+    let deadline = 0;
+    let timerId = null;
+    document.getElementById("bank-count").textContent = String(questions.length);
+
+    function shuffle(items) {
+      for (let i = items.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [items[i], items[j]] = [items[j], items[i]];
+      }
+      return items;
+    }
+
+    function createPracticeSet() {
+      const categories = new Map();
+      const seenQuestions = new Set();
+      for (const item of questions) {
+        if (seenQuestions.has(item.q)) continue;
+        seenQuestions.add(item.q);
+        if (!categories.has(item.c)) categories.set(item.c, []);
+        categories.get(item.c).push(item);
+      }
+      const values = shuffle(categories.get("Australian values")).slice(0, 5);
+      categories.delete("Australian values");
+      const buckets = shuffle([...categories.values()].map(bucket => shuffle(bucket)));
+      const selectedQuestions = [...values];
+      while (selectedQuestions.length < setSize) {
+        for (const bucket of buckets) {
+          if (bucket.length && selectedQuestions.length < setSize) {
+            selectedQuestions.push(bucket.pop());
+          }
+        }
+      }
+      return shuffle(selectedQuestions).map(item => ({ ...item, o: [...item.o] }));
+    }
+
+    function shuffleOptions(item) {
+      const correctOption = item.o[item.a];
+      shuffle(item.o);
+      item.a = item.o.indexOf(correctOption);
+    }
+
+    function updateProgress() {
+      const completed = index + (answered ? 1 : 0);
+      const percent = Math.round(completed / practiceQuestions.length * 100);
+      document.getElementById("score").textContent = mode === "exam" && !finished ? "Hidden until results" : `${correct} / ${completed}`;
+      document.getElementById("remaining").textContent = String(practiceQuestions.length - completed);
+      document.getElementById("progress-label").textContent =
+        completed === practiceQuestions.length ? "Set completed" : `Question ${index + 1} of ${practiceQuestions.length}`;
+      document.getElementById("progress-percent").textContent = `${percent}% complete`;
+      progressBar.style.width = `${percent}%`;
+      progressTrack.setAttribute("aria-valuenow", String(completed));
+    }
+
+    function renderQuestion() {
+      selected = null;
+      answered = false;
+      const item = practiceQuestions[index];
+      shuffleOptions(item);
+      categoryEl.textContent = item.c;
+      questionNumberEl.textContent = `Question ${index + 1}`;
+      questionEl.textContent = item.q;
+      optionsEl.replaceChildren();
+      item.o.forEach((option, optionIndex) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "option";
+        button.setAttribute("aria-pressed", "false");
+        const letter = document.createElement("span");
+        letter.className = "option-letter";
+        letter.setAttribute("aria-hidden", "true");
+        letter.textContent = letters[optionIndex];
+        const text = document.createElement("span");
+        text.textContent = option;
+        button.append(letter, text);
+        button.addEventListener("click", () => {
+          if (answered) return;
+          selected = optionIndex;
+          optionsEl.querySelectorAll(".option").forEach((choice, choiceIndex) => {
+            const isSelected = choiceIndex === selected;
+            choice.classList.toggle("selected", isSelected);
+            choice.setAttribute("aria-pressed", String(isSelected));
+          });
+          submitButton.disabled = false;
+        });
+        optionsEl.append(button);
+      });
+      feedbackEl.hidden = true;
+      feedbackEl.className = "feedback";
+      feedbackEl.replaceChildren();
+      submitButton.hidden = false;
+      submitButton.disabled = true;
+      nextButton.hidden = true;
+      updateProgress();
+    }
+
+    function submitAnswer() {
+      if (mode === "exam" && Date.now() >= deadline) {
+        showComplete(true);
+        return;
+      }
+      if (selected === null || answered || finished) return;
+      answered = true;
+      const item = practiceQuestions[index];
+      const isCorrect = selected === item.a;
+      responses[index] = selected;
+      if (isCorrect) correct += 1;
+      if (mode === "exam") {
+        if (index === practiceQuestions.length - 1) showComplete();
+        else {
+          index += 1;
+          renderQuestion();
+          questionEl.focus();
+        }
+        return;
+      }
+      optionsEl.querySelectorAll(".option").forEach((choice, choiceIndex) => {
+        choice.disabled = true;
+        if (choiceIndex === item.a) choice.classList.add("correct");
+        if (choiceIndex === selected && !isCorrect) choice.classList.add("incorrect");
+      });
+      const heading = document.createElement("strong");
+      heading.textContent = isCorrect ? "Correct!" : `Not quite. The correct answer is ${letters[item.a]}.`;
+      const explanation = document.createElement("p");
+      explanation.textContent = item.e;
+      feedbackEl.append(heading, explanation);
+      feedbackEl.className = `feedback ${isCorrect ? "good" : "bad"}`;
+      feedbackEl.hidden = false;
+      submitButton.hidden = true;
+      nextButton.hidden = false;
+      nextButton.textContent = index === practiceQuestions.length - 1 ? "See results" : "Next question";
+      updateProgress();
+      nextButton.focus();
+    }
+
+    function showComplete(timedOut = false) {
+      if (finished) return;
+      finished = true;
+      clearInterval(timerId);
+      quizEl.hidden = true;
+      completeEl.hidden = false;
+      const valuesCorrect = practiceQuestions.filter((item, i) => item.c === "Australian values" && responses[i] === item.a).length;
+      document.getElementById("final-score").textContent =
+        `You answered ${correct} out of ${practiceQuestions.length} questions correctly (${Math.round(correct / practiceQuestions.length * 100)}%).`;
+      document.getElementById("result-heading").textContent = timedOut ? "Time is up." : "Your 20-question results";
+      document.getElementById("pass-result").textContent =
+        `${correct >= 15 && valuesCorrect === 5 ? "Simulation target met" : "Simulation target not met"}: ${valuesCorrect}/5 values answers correct. You need at least 15/20 overall and all five values answers correct.`;
+      const completed = responses.filter(response => response !== undefined).length;
+      document.getElementById("score").textContent = `${correct} / ${practiceQuestions.length}`;
+      document.getElementById("remaining").textContent = String(practiceQuestions.length - completed);
+      document.getElementById("progress-label").textContent = timedOut ? `Time expired: ${completed}/20 answered` : "Set completed";
+      document.getElementById("progress-percent").textContent = `${Math.round(completed / practiceQuestions.length * 100)}% answered`;
+      progressBar.style.width = `${completed / practiceQuestions.length * 100}%`;
+      progressTrack.setAttribute("aria-valuenow", String(completed));
+      const review = document.getElementById("review");
+      review.replaceChildren();
+      practiceQuestions.forEach((item, i) => {
+        const details = document.createElement("details");
+        const summary = document.createElement("summary");
+        summary.textContent = `${i + 1}. ${responses[i] === item.a ? "Correct" : "Incorrect or unanswered"}: ${item.q}`;
+        const answer = document.createElement("p");
+        answer.textContent = `Your answer: ${responses[i] === undefined ? "Not submitted" : item.o[responses[i]]}. Correct answer: ${item.o[item.a]}.`;
+        const explanation = document.createElement("p");
+        explanation.textContent = item.e;
+        details.append(summary, answer, explanation);
+        review.append(details);
+      });
+      review.hidden = false;
+      document.getElementById("result-heading").focus();
+    }
+
+    function tickTimer() {
+      const seconds = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
+      document.getElementById("timer").textContent = `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")}`;
+      if (seconds === 0) showComplete(true);
+    }
+
+    function restart() {
+      clearInterval(timerId);
+      mode = document.getElementById("mode").value;
+      responses = [];
+      finished = false;
+      practiceQuestions = createPracticeSet();
+      index = 0;
+      correct = 0;
+      quizEl.hidden = false;
+      completeEl.hidden = true;
+      document.getElementById("review").hidden = true;
+      document.getElementById("timer-stat").hidden = mode !== "exam";
+      document.getElementById("mode-description").textContent = mode === "exam"
+        ? "Exam simulation: 45 minutes from now. Answers and explanations appear only at the end. Refreshing or starting a new set discards this attempt."
+        : "Practice mode: explanations after every answer. Starting a new set replaces current progress.";
+      if (mode === "exam") {
+        deadline = Date.now() + 45 * 60 * 1000;
+        tickTimer();
+        timerId = setInterval(tickTimer, 1000);
+      }
+      renderQuestion();
+      questionEl.focus();
+    }
+
+    submitButton.addEventListener("click", submitAnswer);
+    nextButton.addEventListener("click", () => {
+      if (!answered) return;
+      if (index === practiceQuestions.length - 1) {
+        showComplete();
+      } else {
+        index += 1;
+        renderQuestion();
+        questionEl.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    });
+    restartButton.addEventListener("click", restart);
+    document.getElementById("start-set").addEventListener("click", restart);
+    document.getElementById("try-again").addEventListener("click", restart);
+    renderQuestion();
+  </script>
+</body>
+</html>
