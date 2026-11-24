@@ -75,6 +75,8 @@ test("question bank and 500 random sets have correct answers, five values and di
       if (new Set(set.map(item => item.t)).size !== 20) throw Error("Repeated topic");
       if (new Set(set.map(item => item.c)).size !== 6) throw Error("Missing category");
       if (set.filter(item => item.c === "Australian values").length !== 5) throw Error("Wrong values count");
+      if (set.slice(15).some(item => item.c !== "Australian values")) throw Error("Values questions are not last");
+      if (set.some(item => item.o.length !== 3 || new Set(item.o).size !== 3)) throw Error("Wrong option count");
       for (const item of set) {
         const answer = item.o[item.a];
         shuffleOptions(item);
@@ -168,15 +170,25 @@ test("corrupt saved history is reported explicitly and does not prevent practice
   assert.equal(app.run("practiceQuestions.length"), 20);
 });
 
-test("practice preserves immediate feedback, prevents duplicate scoring and resets", () => {
+test("questions navigate without feedback and final submit scores once", () => {
   const app = setup();
-  app.run("selected = practiceQuestions[0].a; submitAnswer(); submitAnswer();");
-  assert.equal(app.get("feedback").hidden, false);
-  assert.equal(app.get("score").textContent, "1 / 1");
+  assert.equal(app.get("previous").hidden, true);
+  app.run(`
+    selected = practiceQuestions[0].a;
+    responses[index] = selected;
+    updateProgress();
+  `);
+  assert.equal(app.get("feedback").hidden, true);
+  assert.equal(app.get("score").textContent, "Hidden until results");
+  assert.equal(app.get("remaining").textContent, "19");
   app.get("next").listeners.click();
   assert.equal(app.get("progress-label").textContent, "Question 2 of 20");
+  assert.equal(app.get("previous").hidden, false);
+  app.get("previous").listeners.click();
+  assert.equal(app.get("progress-label").textContent, "Question 1 of 20");
+  assert.equal(app.run("selected"), app.run("practiceQuestions[0].a"));
   app.get("restart").listeners.click();
-  assert.equal(app.get("score").textContent, "0 / 0");
+  assert.equal(app.get("score").textContent, "Hidden until results");
 });
 
 for (const scenario of [
@@ -197,13 +209,18 @@ for (const scenario of [
           ? item.c === "Australian values" && mistakes < 1
           : item.c !== "Australian values" && mistakes < 5;
         if (wrong) mistakes++;
-        selected = wrong ? (item.a + 1) % 4 : item.a;
-        submitAnswer();
-        if (step < 19 && !feedbackEl.hidden) throw Error("Exam leaked feedback");
+        responses[index] = wrong ? (item.a + 1) % 3 : item.a;
+        if (step < 19) nextButton.listeners.click();
       }
+      if (!nextButton.hidden) throw Error("Next should be hidden on the final question");
+      if (submitButton.hidden) throw Error("Submit should be visible on the final question");
+      submitButton.listeners.click();
+      if (!feedbackEl.hidden) throw Error("Exam leaked feedback");
     `);
     assert.ok(app.get("pass-result").textContent.startsWith(scenario.expected));
     assert.equal(app.get("complete").hidden, false);
+    assert.ok(app.get("result-types").textContent.startsWith("Question types:"));
+    assert.ok(app.get("result-types").textContent.includes("Australian values (5)"));
     assert.equal(app.get("review").children.length, 20);
     assert.equal(app.intervals.size, 0);
   });
@@ -223,5 +240,5 @@ test("deadline expires even if interval was delayed and rejects a late answer", 
   app.get("mode").value = "practice";
   app.get("try-again").listeners.click();
   assert.equal(app.get("timer-stat").hidden, true);
-  assert.equal(app.get("score").textContent, "0 / 0");
+  assert.equal(app.get("score").textContent, "Hidden until results");
 });

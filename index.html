@@ -41,12 +41,12 @@
       color-scheme: light;
       --ink: #18312c;
       --muted: #5c706b;
-      --green: #176b52;
-      --green-dark: #104b3b;
+      --green: #00729f;
+      --green-dark: #005d83;
       --gold: #efbd4f;
       --paper: #f5f7f3;
       --line: #dce5df;
-      --good: #176b52;
+      --good: #00729f;
       --bad: #a43b36;
       --shadow: 0 18px 50px rgb(20 49 42 / 10%);
     }
@@ -97,7 +97,7 @@
     .stat span { color: var(--muted); font-size: .8rem; }
     .progress-row { display: flex; justify-content: space-between; gap: 12px; margin: 8px 2px 6px; color: var(--muted); font-size: .86rem; }
     .progress-track { height: 8px; overflow: hidden; border-radius: 10px; background: #e2e9e3; }
-    .progress-bar { width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--green), #4b9c70); transition: width .25s ease; }
+    .progress-bar { width: 0; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--green), #3b9bc1); transition: width .25s ease; }
     .card {
       overflow: hidden; border: 1px solid var(--line); border-radius: 20px;
       background: #fff; box-shadow: var(--shadow);
@@ -106,7 +106,7 @@
     .question-meta { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
     .category {
       display: inline-flex; align-items: center; min-height: 27px; padding: 3px 10px;
-      border-radius: 999px; background: #e8f2ec; color: var(--green-dark);
+      border-radius: 999px; background: #e8f4f8; color: var(--green-dark);
       font-size: .76rem; font-weight: 750;
     }
     .question-number { color: var(--muted); font-size: .82rem; font-weight: 650; }
@@ -117,11 +117,11 @@
       border: 1px solid var(--line); border-radius: 12px; background: #fff; color: var(--ink);
       text-align: left; cursor: pointer; transition: border-color .15s, background .15s, transform .15s;
     }
-    .option:hover:not(:disabled) { border-color: #83ae9a; background: #f8fbf8; transform: translateY(-1px); }
+    .option:hover:not(:disabled) { border-color: #7eb6cc; background: #f5fafc; transform: translateY(-1px); }
     .option:focus-visible, button:focus-visible, a:focus-visible { outline: 3px solid #e4ac36; outline-offset: 3px; }
     .option:disabled { cursor: default; }
-    .option.selected { border-color: var(--green); background: #f0f7f2; box-shadow: inset 0 0 0 1px var(--green); }
-    .option.correct { border-color: var(--good); background: #edf7f0; }
+    .option.selected { border-color: var(--green); background: #eff7fa; box-shadow: inset 0 0 0 1px var(--green); }
+    .option.correct { border-color: var(--good); background: #edf7fa; }
     .option.incorrect { border-color: var(--bad); background: #fff1ef; }
     .option-letter {
       display: grid; flex: 0 0 27px; place-items: center; width: 27px; height: 27px;
@@ -130,7 +130,7 @@
     }
     .selected .option-letter { border-color: var(--green); background: var(--green); color: #fff; }
     .feedback { margin: 0 28px 22px; padding: 16px 18px; border-radius: 12px; }
-    .feedback.good { background: #edf7f0; color: #154b37; }
+    .feedback.good { background: #edf7fa; color: #004b65; }
     .feedback.bad { background: #fff1ef; color: #6f2925; }
     .feedback strong { display: block; margin-bottom: 4px; }
     .feedback p { margin: 0; }
@@ -163,30 +163,113 @@
     .footer-note { padding: 22px 0 0; color: var(--muted); font-size: .83rem; }
     .footer-note a { color: var(--green-dark); font-weight: 650; }
     footer { padding-bottom: 32px; }
-    @media (max-width: 600px) {
-      main { padding-top: 16px; }
-      .site-header { padding: 12px 0; }
-      h1 { font-size: 1.7rem; }
-      .intro p, .notice { font-size: .85rem; }
-      .notice { margin-top: 10px; padding: 8px 10px; }
-      .mode-controls select { flex: 1; }
-      .stats { gap: 6px 14px; }
-      .stat strong, .stat span { font-size: .8rem; }
-      .card-top { padding: 21px 18px 0; }
-      .options { padding: 0 18px 20px; }
-      .feedback { margin-inline: 18px; }
-      .actions { padding: 14px 18px; }
-      .actions .button { flex: 1; }
+    .site-header { padding: 0; border-bottom: 1px solid #d7d7d7; background: #fff; color: #161616; }
+    .header-inner { width: min(1450px, calc(100% - 48px)); min-height: 112px; display: flex; align-items: center; gap: 32px; }
+    .government-lockup { display: flex; align-items: center; gap: 14px; padding-right: 32px; border-right: 1px solid #c8c8c8; }
+    .government-mark { display: grid; place-items: center; width: 70px; height: 70px; border: 2px solid #161616; border-radius: 50%; font: 800 1.2rem/1 Georgia, serif; }
+    .department-name { font: 700 1.05rem/1.35 Georgia, serif; }
+    .practice-brand { display: grid; gap: 1px; }
+    .practice-brand strong { font-size: 1.8rem; line-height: 1.05; letter-spacing: 0; }
+    .practice-brand span { color: #4d4d4d; font-size: .78rem; }
+    body { background: #fff; color: #191919; font: 16px/1.45 Arial, Helvetica, sans-serif; }
+    main { width: min(1450px, calc(100% - 48px)); padding: 0 0 28px; }
+    .intro { display: flex; align-items: center; gap: 16px; min-height: 66px; margin: 0; padding: 10px 18px; border-bottom: 1px solid #ddd; background: #fff; }
+    .intro > .eyebrow, .intro > h1, .intro > p:first-of-type, .intro > .notice:not(#history-warning) { display: none; }
+    .mode-controls { margin: 0; margin-left: auto; }
+    .mode-controls label { font-weight: 700; }
+    #mode-description { display: block !important; margin: 0 auto 0 0; color: #555; font-size: .85rem; }
+    #cycle-status { margin: 0; max-width: 310px; font-size: .75rem; }
+    .stats { min-height: 48px; margin: 0; padding: 8px 20px; border-bottom: 1px solid #ddd; }
+    .stat span, .stat strong { font-size: .82rem; }
+    .progress-row, .progress-track { display: none; }
+    .card { display: grid; grid-template-columns: 290px minmax(0, 1fr); min-height: 560px; overflow: visible; border: 0; border-radius: 0; box-shadow: none; }
+    .card:has(#quiz:not([hidden])) { height: min(620px, max(300px, calc(100dvh - 250px))); min-height: 0; overflow: hidden; }
+    .question-nav { display: flex; grid-column: 1; grid-row: 1; min-height: 0; padding: 10px 8px 0 0; border-right: 1px solid #ddd; flex-direction: column; }
+    .question-nav-title { padding: 10px 14px; color: #555; font-size: .78rem; font-weight: 700; text-transform: uppercase; }
+    .question-nav-list { min-height: 0; overflow-y: auto; }
+    .question-nav-item { position: relative; display: flex; align-items: center; width: 100%; min-height: 66px; padding: 0 16px; border: 0; border-left: 5px solid transparent; border-bottom: 1px solid #d8d8d8; background: #f1f1f1; color: #262626; font-weight: 700; text-align: left; }
+    .question-nav-item.active { border-left-color: #00729f; background: #fff; color: #005d83; }
+    .question-nav-item.answered { border-left-color: #00729f; }
+    .question-status { width: 35px; height: 35px; margin-right: 14px; border: 3px dashed #161616; border-radius: 50%; }
+    .question-nav-item.answered .question-status { display: grid; place-items: center; border-style: solid; border-color: #00729f; color: #00729f; }
+    .question-nav-item.answered .question-status::after { content: "✓"; font-size: 1.1rem; }
+    #quiz, .complete, .review { grid-column: 2; min-width: 0; }
+    #quiz { display: flex; grid-row: 1; min-height: 0; flex-direction: column; }
+    .question-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable; }
+    .card-top { padding: 28px 56px 0; }
+    .question-meta { justify-content: flex-start; }
+    .category { padding: 0; border-radius: 0; background: transparent; color: #4a4a4a; font-size: 1rem; font-weight: 400; }
+    .question-number { display: none; }
+    h2 { margin: 8px 0 12px; color: #111; font-size: 1.55rem; line-height: 1.35; letter-spacing: 0; }
+    #question:focus { outline: none; }
+    .options { gap: 0; padding: 0 56px 30px; }
+    .option { min-height: 58px; align-items: center; padding: 7px 0; border: 0; border-radius: 0; background: transparent; font-size: 1.45rem; line-height: 1.35; }
+    .option:hover:not(:disabled) { transform: none; border: 0; background: transparent; }
+    .option.selected { border: 0; background: transparent; box-shadow: none; }
+    .option-letter { display: none; }
+    .option > span:last-child { position: relative; padding-left: 48px; }
+    .option > span:last-child::before { content: ""; position: absolute; left: 1px; top: 50%; width: 30px; height: 30px; border: 2px solid #686868; border-radius: 50%; background: #fff; transform: translateY(-50%); transition: border-color .15s, background .15s, box-shadow .15s; }
+    .option.selected > span:last-child::before { border-color: #00729f; background: #00729f; box-shadow: inset 0 0 0 6px #fff; }
+    .option.correct > span:last-child::before { border-color: var(--good); background: var(--good); box-shadow: inset 0 0 0 6px #fff; }
+    .option.incorrect > span:last-child::before { border-color: var(--bad); background: var(--bad); box-shadow: inset 0 0 0 6px #fff; }
+    .feedback { margin: 0 56px 30px; border-radius: 0; }
+    .actions { flex: 0 0 auto; display: flex; justify-content: flex-end; align-items: center; gap: 12px; padding: 14px 0 0; border-top: 1px solid #e2e2e2; background: #fff; }
+    .actions .button { min-width: 145px; min-height: 58px; border-radius: 2px; font-weight: 500; }
+    #restart { min-width: 0; margin-right: auto; border: 0; color: #00729f; background: transparent; }
+    #previous, #submit, #next { background: #fff; border: 1.5px solid #00729f; color: #00729f; }
+    #submit:not(:disabled), #next:not(:disabled) { background: #00729f; color: #fff; }
+    .complete { align-self: start; padding: 56px; text-align: left; }
+    .review { padding: 0 56px 56px; }
+    .review details { padding: 15px 0; }
+    .review summary { line-height: 1.45; }
+    .result-type { color: #3d3d3d; font-weight: 700; }
+    @media (max-width: 720px) {
+      .header-inner, main { width: 100%; }
+      .header-inner { min-height: 92px; padding: 14px 16px; gap: 14px; }
+      .government-lockup { padding-right: 14px; }
+      .government-mark { width: 52px; height: 52px; font-size: .9rem; }
+      .department-name { font-size: .72rem; }
+      .practice-brand strong { font-size: 1.05rem; }
+      .practice-brand span { display: none; }
+      .intro { align-items: stretch; flex-direction: column; gap: 8px; }
+      .mode-controls { margin: 0; }
+      #mode-description { font-size: .75rem; }
+      .stats { flex-wrap: nowrap; overflow-x: auto; padding-inline: 12px; }
+      .card, .card:has(#quiz:not([hidden])) { display: block; height: auto; min-height: 0; overflow: visible; }
+      .question-nav { display: block; padding: 0; border: 0; }
+      .question-nav-title { display: none; }
+      .question-nav-list { display: flex; max-height: none; overflow-x: auto; }
+      .question-nav-item { flex: 0 0 64px; justify-content: center; min-height: 62px; padding: 0; border: 0; border-bottom: 3px solid transparent; font-size: 0; }
+      .question-nav-item.active { border-bottom-color: #00729f; }
+      .question-status { width: 27px; height: 27px; margin: 0; }
+      #quiz { min-height: 520px; }
+      .question-body { overflow: visible; }
+      .card-top { padding: 24px 20px 0; }
+      h2 { font-size: 1.25rem; }
+      .options { padding: 0 20px 105px; }
+      .option { font-size: 1.1rem; }
+      .option > span:last-child { padding-left: 42px; }
+      .option > span:last-child::before { width: 28px; height: 28px; }
+      .feedback { margin: 0 20px 96px; }
+      .actions { flex-wrap: wrap; gap: 8px; padding: 12px; }
+      .actions .button { min-width: 0; }
+      #restart { flex-basis: 100%; order: 2; margin-right: 0; }
+      #previous { flex: 1 1 calc(50% - 4px); }
+      #submit, #next { flex: 1 1 calc(50% - 4px); }
+      .complete, .review { padding: 28px 20px; }
     }
   </style>
 </head>
 <body>
   <header class="site-header">
-    <div class="header-inner brand">
-      <div class="brand-mark" aria-hidden="true">AU</div>
-      <div>
-        <div class="brand-name">Citizenship Practice</div>
-        <div class="brand-subtitle">Australia · self-paced question bank</div>
+    <div class="header-inner">
+      <div class="government-lockup" aria-label="Independent Australian citizenship practice">
+        <div class="government-mark" aria-hidden="true">AU</div>
+        <div class="department-name">Australian Citizenship<br>Independent Practice</div>
+      </div>
+      <div class="practice-brand">
+        <strong>Australian Citizenship</strong>
+        <span>Online Practice Test</span>
       </div>
     </div>
   </header>
@@ -226,20 +309,27 @@
     </section>
 
     <section class="card" aria-live="polite" aria-atomic="true">
+      <nav class="question-nav" aria-label="Question progress">
+        <div class="question-nav-title">Questions</div>
+        <div class="question-nav-list" id="question-nav-list"></div>
+      </nav>
       <div id="quiz">
-        <div class="card-top">
-          <div class="question-meta">
-            <span class="category" id="category"></span>
-            <span class="question-number" id="question-number"></span>
+        <div class="question-body">
+          <div class="card-top">
+            <div class="question-meta">
+              <span class="category" id="category"></span>
+              <span class="question-number" id="question-number"></span>
+            </div>
+            <h2 id="question" tabindex="-1"></h2>
           </div>
-          <h2 id="question" tabindex="-1"></h2>
+          <div class="options" id="options" role="group" aria-labelledby="question"></div>
+          <div class="feedback" id="feedback" role="status" hidden></div>
         </div>
-        <div class="options" id="options" role="group" aria-labelledby="question"></div>
-        <div class="feedback" id="feedback" role="status" hidden></div>
         <div class="actions">
           <button class="button button-secondary" id="restart" type="button">New 20-question set</button>
-          <button class="button button-primary" id="submit" type="button" disabled>Submit answer</button>
-          <button class="button button-primary" id="next" type="button" hidden>Next question</button>
+          <button class="button button-secondary" id="previous" type="button" hidden>Previous</button>
+          <button class="button button-primary" id="next" type="button">Next</button>
+          <button class="button button-primary" id="submit" type="button" hidden>Submit</button>
         </div>
       </div>
       <div class="complete" id="complete" hidden>
@@ -247,6 +337,7 @@
         <h2 id="result-heading" tabindex="-1">You finished your 20-question set.</h2>
         <p id="final-score"></p>
         <p id="pass-result"></p>
+        <p class="result-type" id="result-types"></p>
         <p>Review any topics you found challenging in the official resource booklet, then try again.</p>
         <button class="button button-primary" id="try-again" type="button">New 20-question set</button>
       </div>
@@ -453,7 +544,7 @@
       { t: "dual-citizenship", q: "Does holding another citizenship exempt an Australian citizen from Australian law?", o: ["No; Australian laws must be followed in Australia", "Yes, if they prefer the other country's laws", "Yes, whenever a family member agrees", "Only during public holidays"], a: 0, c: "Australian values", e: "Dual or multiple citizenship does not remove the obligation to obey Australian laws. Some Australian laws also apply to citizens overseas." }
     );
 
-    const letters = ["A", "B", "C", "D"];
+    const letters = ["A", "B", "C"];
     const categoryEl = document.getElementById("category");
     const questionNumberEl = document.getElementById("question-number");
     const questionEl = document.getElementById("question");
@@ -461,6 +552,7 @@
     const feedbackEl = document.getElementById("feedback");
     const submitButton = document.getElementById("submit");
     const nextButton = document.getElementById("next");
+    const previousButton = document.getElementById("previous");
     const restartButton = document.getElementById("restart");
     const quizEl = document.getElementById("quiz");
     const completeEl = document.getElementById("complete");
@@ -521,7 +613,17 @@
         const candidates = eligible[slot].filter(item => item.t === topic);
         return candidates[Math.floor(Math.random() * candidates.length)];
       });
-      return shuffle(selectedQuestions).map(item => ({ ...item, o: [...item.o] }));
+      return [
+        ...shuffle(selectedQuestions.filter(item => item.c !== "Australian values")),
+        ...shuffle(selectedQuestions.filter(item => item.c === "Australian values"))
+      ].map(item => ({ ...item, ...withThreeOptions(item) }));
+    }
+
+    function withThreeOptions(item) {
+      const correctOption = item.o[item.a];
+      const options = [correctOption, ...shuffle(item.o.filter((option, optionIndex) => optionIndex !== item.a)).slice(0, 2)];
+      shuffle(options);
+      return { o: options, a: options.indexOf(correctOption) };
     }
 
     function warnHistory(message, error) {
@@ -582,23 +684,42 @@
       item.a = item.o.indexOf(correctOption);
     }
 
+    function renderQuestionNav() {
+      const nav = document.getElementById("question-nav-list");
+      nav.replaceChildren();
+      practiceQuestions.forEach((item, questionIndex) => {
+        const row = document.createElement("div");
+        row.className = "question-nav-item";
+        if (questionIndex === index) row.classList.add("active");
+        if (responses[questionIndex] !== undefined) row.classList.add("answered");
+        if (questionIndex === index) row.setAttribute("aria-current", "step");
+        const status = document.createElement("span");
+        status.className = "question-status";
+        status.setAttribute("aria-hidden", "true");
+        const label = document.createElement("span");
+        label.textContent = `Question ${questionIndex + 1}`;
+        row.append(status, label);
+        nav.append(row);
+      });
+    }
+
     function updateProgress() {
-      const completed = index + (answered ? 1 : 0);
+      const completed = responses.filter(response => response !== undefined).length;
       const percent = Math.round(completed / practiceQuestions.length * 100);
-      document.getElementById("score").textContent = mode === "exam" && !finished ? "Hidden until results" : `${correct} / ${completed}`;
+      document.getElementById("score").textContent = finished ? `${correct} / ${practiceQuestions.length}` : "Hidden until results";
       document.getElementById("remaining").textContent = String(practiceQuestions.length - completed);
       document.getElementById("progress-label").textContent =
         completed === practiceQuestions.length ? "Set completed" : `Question ${index + 1} of ${practiceQuestions.length}`;
       document.getElementById("progress-percent").textContent = `${percent}% complete`;
       progressBar.style.width = `${percent}%`;
       progressTrack.setAttribute("aria-valuenow", String(completed));
+      renderQuestionNav();
     }
 
     function renderQuestion() {
-      selected = null;
+      selected = responses[index] ?? null;
       answered = false;
       const item = practiceQuestions[index];
-      shuffleOptions(item);
       categoryEl.textContent = item.c;
       questionNumberEl.textContent = `Question ${index + 1}`;
       questionEl.textContent = item.q;
@@ -606,8 +727,8 @@
       item.o.forEach((option, optionIndex) => {
         const button = document.createElement("button");
         button.type = "button";
-        button.className = "option";
-        button.setAttribute("aria-pressed", "false");
+        button.className = `option${optionIndex === selected ? " selected" : ""}`;
+        button.setAttribute("aria-pressed", String(optionIndex === selected));
         const letter = document.createElement("span");
         letter.className = "option-letter";
         letter.setAttribute("aria-hidden", "true");
@@ -616,23 +737,23 @@
         text.textContent = option;
         button.append(letter, text);
         button.addEventListener("click", () => {
-          if (answered) return;
           selected = optionIndex;
+          responses[index] = optionIndex;
           optionsEl.querySelectorAll(".option").forEach((choice, choiceIndex) => {
             const isSelected = choiceIndex === selected;
             choice.classList.toggle("selected", isSelected);
             choice.setAttribute("aria-pressed", String(isSelected));
           });
-          submitButton.disabled = false;
+          updateProgress();
         });
         optionsEl.append(button);
       });
       feedbackEl.hidden = true;
       feedbackEl.className = "feedback";
       feedbackEl.replaceChildren();
-      submitButton.hidden = false;
-      submitButton.disabled = true;
-      nextButton.hidden = true;
+      previousButton.hidden = index === 0;
+      nextButton.hidden = index === practiceQuestions.length - 1;
+      submitButton.hidden = index !== practiceQuestions.length - 1;
       updateProgress();
     }
 
@@ -641,43 +762,15 @@
         showComplete(true);
         return;
       }
-      if (selected === null || answered || finished) return;
-      answered = true;
-      const item = practiceQuestions[index];
-      const isCorrect = selected === item.a;
-      responses[index] = selected;
-      if (isCorrect) correct += 1;
-      if (mode === "exam") {
-        if (index === practiceQuestions.length - 1) showComplete();
-        else {
-          index += 1;
-          renderQuestion();
-          questionEl.focus();
-        }
-        return;
-      }
-      optionsEl.querySelectorAll(".option").forEach((choice, choiceIndex) => {
-        choice.disabled = true;
-        if (choiceIndex === item.a) choice.classList.add("correct");
-        if (choiceIndex === selected && !isCorrect) choice.classList.add("incorrect");
-      });
-      const heading = document.createElement("strong");
-      heading.textContent = isCorrect ? "Correct!" : `Not quite. The correct answer is ${letters[item.a]}.`;
-      const explanation = document.createElement("p");
-      explanation.textContent = item.e;
-      feedbackEl.append(heading, explanation);
-      feedbackEl.className = `feedback ${isCorrect ? "good" : "bad"}`;
-      feedbackEl.hidden = false;
-      submitButton.hidden = true;
-      nextButton.hidden = false;
-      nextButton.textContent = index === practiceQuestions.length - 1 ? "See results" : "Next question";
-      updateProgress();
-      nextButton.focus();
+      if (finished || index !== practiceQuestions.length - 1) return;
+      correct = practiceQuestions.filter((item, questionIndex) => responses[questionIndex] === item.a).length;
+      showComplete();
     }
 
     function showComplete(timedOut = false) {
       if (finished) return;
       finished = true;
+      correct = practiceQuestions.filter((item, questionIndex) => responses[questionIndex] === item.a).length;
       clearInterval(timerId);
       quizEl.hidden = true;
       completeEl.hidden = false;
@@ -687,6 +780,12 @@
       document.getElementById("result-heading").textContent = timedOut ? "Time is up." : "Your 20-question results";
       document.getElementById("pass-result").textContent =
         `${correct >= 15 && valuesCorrect === 5 ? "Simulation target met" : "Simulation target not met"}: ${valuesCorrect}/5 values answers correct. You need at least 15/20 overall and all five values answers correct.`;
+      const typeCounts = practiceQuestions.reduce((counts, item) => {
+        counts[item.c] = (counts[item.c] || 0) + 1;
+        return counts;
+      }, {});
+      document.getElementById("result-types").textContent =
+        `Question types: ${Object.entries(typeCounts).map(([type, count]) => `${type} (${count})`).join(", ")}.`;
       const completed = responses.filter(response => response !== undefined).length;
       document.getElementById("score").textContent = `${correct} / ${practiceQuestions.length}`;
       document.getElementById("remaining").textContent = String(practiceQuestions.length - completed);
@@ -700,11 +799,14 @@
         const details = document.createElement("details");
         const summary = document.createElement("summary");
         summary.textContent = `${i + 1}. ${responses[i] === item.a ? "Correct" : "Incorrect or unanswered"}: ${item.q}`;
+        const type = document.createElement("p");
+        type.className = "result-type";
+        type.textContent = `Question type: ${item.c}`;
         const answer = document.createElement("p");
         answer.textContent = `Your answer: ${responses[i] === undefined ? "Not submitted" : item.o[responses[i]]}. Correct answer: ${item.o[item.a]}.`;
         const explanation = document.createElement("p");
         explanation.textContent = item.e;
-        details.append(summary, answer, explanation);
+        details.append(summary, type, answer, explanation);
         review.append(details);
       });
       review.hidden = false;
@@ -732,7 +834,7 @@
       document.getElementById("timer-stat").hidden = mode !== "exam";
       document.getElementById("mode-description").textContent = mode === "exam"
         ? "Exam simulation: 45 minutes from now. Answers and explanations appear only at the end. Refreshing or starting a new set discards this attempt."
-        : "Practice mode: explanations after every answer. Starting a new set replaces current progress.";
+        : "Practice mode: move between questions freely. Answers and explanations appear only after final submission. Starting a new set replaces current progress.";
       if (mode === "exam") {
         deadline = Date.now() + 45 * 60 * 1000;
         tickTimer();
@@ -744,14 +846,16 @@
 
     submitButton.addEventListener("click", submitAnswer);
     nextButton.addEventListener("click", () => {
-      if (!answered) return;
-      if (index === practiceQuestions.length - 1) {
-        showComplete();
-      } else {
-        index += 1;
-        renderQuestion();
-        questionEl.scrollIntoView({ behavior: "smooth", block: "center" });
-      }
+      if (index >= practiceQuestions.length - 1) return;
+      index += 1;
+      renderQuestion();
+      questionEl.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+    previousButton.addEventListener("click", () => {
+      if (index === 0) return;
+      index -= 1;
+      renderQuestion();
+      questionEl.scrollIntoView({ behavior: "smooth", block: "center" });
     });
     restartButton.addEventListener("click", restart);
     document.getElementById("start-set").addEventListener("click", restart);
